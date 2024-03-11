@@ -12,6 +12,10 @@ The action handles download, install and caching of the rig binary.
 Put the action in a step and optionally set the version if you want something
 specific rather than latest.
 
+If the optional `host`, `client-id` and `client-secret` are set. The action
+will use them to activate the service account using `rig auth
+activate-service-account`.
+
 ```yaml
 jobs:
   deploy:
