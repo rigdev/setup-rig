@@ -5,6 +5,15 @@ inputs:
     description: rig CLI version
     required: false
     default: latest
+  host:
+    description: Full URL of rig API server
+    required: false
+  client-id:
+    description: Service account client ID
+    required: false
+  client-secret:
+    description: Service account client secret
+    required: false
 runs:
   using: node20
   main: index.js

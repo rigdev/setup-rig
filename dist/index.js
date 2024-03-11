@@ -6787,20 +6787,43 @@ __nccwpck_require__.d(__webpack_exports__, {
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/tool-cache/lib/tool-cache.js
 var tool_cache = __nccwpck_require__(7784);
+// EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
+var exec = __nccwpck_require__(1514);
 ;// CONCATENATED MODULE: ./src/main.ts
+
 
 
 async function run() {
     const inputs = {
         version: (0,core.getInput)("version"),
+        host: (0,core.getInput)("host"),
+        clientId: (0,core.getInput)("client-id"),
+        clientSecret: (0,core.getInput)("client-secret"),
     };
     let cachedPath = (0,tool_cache.find)("rig", inputs.version, "amd64");
     if (!cachedPath) {
-        const file = await (0,tool_cache.downloadTool)(`https://github.com/rigdev/rig/releases/v${inputs.version}/download/rig_linux_x86_64.tar.gz`);
+        let version = inputs.version;
+        if (inputs.version !== "latest") {
+            version = `v${inputs.version}`;
+        }
+        const file = await (0,tool_cache.downloadTool)(`https://github.com/rigdev/rig/releases/${version}/download/rig_linux_x86_64.tar.gz`);
         const extractedPath = await (0,tool_cache.extractTar)(file, "/tmp/rig/test");
         cachedPath = await (0,tool_cache.cacheDir)(extractedPath, "rig", inputs.version, "amd64");
     }
     (0,core.addPath)(cachedPath);
+    if (inputs.host || inputs.clientId || inputs.clientSecret) {
+        (0,core.info)("Running `rig auth activate-service-account`");
+        const args = ["auth", "activate-service-account"];
+        if (inputs.host) {
+            args.push("--host", inputs.host);
+        }
+        await (0,exec.exec)("rig", args, {
+            env: {
+                RIG_CLIENT_ID: inputs.clientId,
+                RIG_CLIENT_SECRET: inputs.clientSecret,
+            },
+        });
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts

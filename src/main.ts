@@ -1,13 +1,20 @@
-import { getInput, addPath } from "@actions/core";
+import { getInput, addPath, info } from "@actions/core";
 import { downloadTool, extractTar, cacheDir, find } from "@actions/tool-cache";
+import { exec, ExecOptions } from "@actions/exec";
 
 interface Inputs {
   version: string;
+  host: string;
+  clientId: string;
+  clientSecret: string;
 }
 
 export async function run(): Promise<void> {
   const inputs: Inputs = {
     version: getInput("version"),
+    host: getInput("host"),
+    clientId: getInput("client-id"),
+    clientSecret: getInput("client-secret"),
   };
 
   let cachedPath = find("rig", inputs.version, "amd64");
@@ -25,4 +32,20 @@ export async function run(): Promise<void> {
   }
 
   addPath(cachedPath);
+
+  if (inputs.host || inputs.clientId || inputs.clientSecret) {
+    info("Running `rig auth activate-service-account`");
+
+    const args = ["auth", "activate-service-account"];
+    if (inputs.host) {
+      args.push("--host", inputs.host);
+    }
+
+    await exec("rig", args, {
+      env: {
+        RIG_CLIENT_ID: inputs.clientId,
+        RIG_CLIENT_SECRET: inputs.clientSecret,
+      },
+    });
+  }
 }

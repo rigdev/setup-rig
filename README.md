@@ -15,13 +15,13 @@ specific rather than latest.
 ```yaml
 jobs:
   deploy:
-    env:
-      RIG_CLIENT_ID: ${{ vars.RIG_CLIENT_ID }}
-      RIG_CLIENT_SECRET: ${{ secrets.RIG_CLIENT_SECRET }}
     steps:
       - uses: rigdev/setup-rig@v1
         with:
           version: 1.7.1
+          host: ${{ vars.RIG_HOST }}
+          client-id: ${{ vars.RIG_CLIENT_ID }}
+          client-secret: ${{ secrets.RIG_CLIENT_SECRET }}
       - run: |
           rig capsule deploy -B ...
 ```
