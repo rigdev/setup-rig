@@ -1,3 +1,4 @@
+import { env } from "process";
 import { getInput, addPath, info } from "@actions/core";
 import { downloadTool, extractTar, cacheDir, find } from "@actions/tool-cache";
 import { exec, ExecOptions } from "@actions/exec";
@@ -43,6 +44,7 @@ export async function run(): Promise<void> {
 
     await exec("rig", args, {
       env: {
+        ...env,
         RIG_CLIENT_ID: inputs.clientId,
         RIG_CLIENT_SECRET: inputs.clientSecret,
       },
