@@ -6783,6 +6783,8 @@ __nccwpck_require__.d(__webpack_exports__, {
   "run": () => (/* binding */ src_run)
 });
 
+;// CONCATENATED MODULE: external "process"
+const external_process_namespaceObject = require("process");
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(2186);
 // EXTERNAL MODULE: ./node_modules/@actions/tool-cache/lib/tool-cache.js
@@ -6790,6 +6792,7 @@ var tool_cache = __nccwpck_require__(7784);
 // EXTERNAL MODULE: ./node_modules/@actions/exec/lib/exec.js
 var exec = __nccwpck_require__(1514);
 ;// CONCATENATED MODULE: ./src/main.ts
+
 
 
 
@@ -6819,6 +6822,7 @@ async function run() {
         }
         await (0,exec.exec)("rig", args, {
             env: {
+                ...external_process_namespaceObject.env,
                 RIG_CLIENT_ID: inputs.clientId,
                 RIG_CLIENT_SECRET: inputs.clientSecret,
             },
