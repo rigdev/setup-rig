@@ -6805,11 +6805,14 @@ async function run() {
     };
     let cachedPath = (0,tool_cache.find)("rig", inputs.version, "amd64");
     if (!cachedPath) {
-        let version = inputs.version;
-        if (inputs.version !== "latest") {
-            version = `v${inputs.version}`;
+        let path = "";
+        if (inputs.version === "latest") {
+            path = `https://github.com/rigdev/rig/releases/latest/download/rig_linux_x86_64.tar.gz`;
         }
-        const file = await (0,tool_cache.downloadTool)(`https://github.com/rigdev/rig/releases/${version}/download/rig_linux_x86_64.tar.gz`);
+        else {
+            path = `https://github.com/rigdev/rig/releases/download/v${inputs.version}/rig_linux_x86_64.tar.gz`;
+        }
+        const file = await (0,tool_cache.downloadTool)(path);
         const extractedPath = await (0,tool_cache.extractTar)(file, "/tmp/rig/test");
         cachedPath = await (0,tool_cache.cacheDir)(extractedPath, "rig", inputs.version, "amd64");
     }
