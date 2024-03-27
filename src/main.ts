@@ -20,14 +20,14 @@ export async function run(): Promise<void> {
 
   let cachedPath = find("rig", inputs.version, "amd64");
   if (!cachedPath) {
-    let version = inputs.version;
-    if (inputs.version !== "latest") {
-      version = `v${inputs.version}`;
+    let path = "";
+    if (inputs.version === "latest") {
+      path = `https://github.com/rigdev/rig/releases/latest/download/rig_linux_x86_64.tar.gz`;
+    } else {
+      path = `https://github.com/rigdev/rig/releases/download/v${inputs.version}/rig_linux_x86_64.tar.gz`;
     }
 
-    const file = await downloadTool(
-      `https://github.com/rigdev/rig/releases/${version}/download/rig_linux_x86_64.tar.gz`,
-    );
+    const file = await downloadTool(path);
     const extractedPath = await extractTar(file, "/tmp/rig/test");
     cachedPath = await cacheDir(extractedPath, "rig", inputs.version, "amd64");
   }
