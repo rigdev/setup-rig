@@ -26,7 +26,7 @@ export async function run(): Promise<void> {
   let version = inputs.version;
 
   if (version === "latest") {
-    const client = new HttpClient();
+    const client = new HttpClient("Setup-Rig-GitHub-Action");
     const response = await client.getJson<Release>(
       "https://api.github.com/repos/rigdev/rig/releases/latest"
     );

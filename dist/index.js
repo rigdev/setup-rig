@@ -30747,7 +30747,7 @@ async function run() {
     };
     let version = inputs.version;
     if (version === "latest") {
-        const client = new lib.HttpClient();
+        const client = new lib.HttpClient("Setup-Rig-GitHub-Action");
         const response = await client.getJson("https://api.github.com/repos/rigdev/rig/releases/latest");
         if (response.result) {
             version = response.result.name;
