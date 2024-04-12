@@ -34,7 +34,7 @@ export async function run(): Promise<void> {
       version = response.result.name;
     }
 
-    debug("fetching version " + version);
+    info("fetching version " + version);
   }
 
   let cachedPath = find("rig", version, "amd64");
