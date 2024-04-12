@@ -30754,13 +30754,15 @@ async function run() {
         }
         (0,core.info)("Fetching version " + version);
     }
-    let cachedPath = (0,tool_cache.find)("rig", version, "amd64");
+    const semver = version.startsWith("v") ? version.slice(1) : version;
+    let cachedPath = (0,tool_cache.find)("rig", semver);
     if (!cachedPath) {
         (0,core.info)("Version not found in cache, fetching " + version);
         const path = `https://github.com/rigdev/rig/releases/download/${version}/rig_linux_x86_64.tar.gz`;
         const file = await (0,tool_cache.downloadTool)(path);
         const extractedPath = await (0,tool_cache.extractTar)(file, "/tmp/rig/test");
-        cachedPath = await (0,tool_cache.cacheDir)(extractedPath, "rig", version, "amd64");
+        cachedPath = await (0,tool_cache.cacheDir)(extractedPath, "rig", semver);
+        (0,core.info)("Added to cache as " + semver);
     }
     (0,core.addPath)(cachedPath);
     if (inputs.host || inputs.clientId || inputs.clientSecret) {
