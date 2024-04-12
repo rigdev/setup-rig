@@ -2,12 +2,17 @@ import { env } from "process";
 import { getInput, addPath, info } from "@actions/core";
 import { downloadTool, extractTar, cacheDir, find } from "@actions/tool-cache";
 import { exec, ExecOptions } from "@actions/exec";
+import { HttpClient } from "@actions/http-client";
 
 interface Inputs {
   version: string;
   host: string;
   clientId: string;
   clientSecret: string;
+}
+
+interface Release {
+  name: string;
 }
 
 export async function run(): Promise<void> {
@@ -18,18 +23,25 @@ export async function run(): Promise<void> {
     clientSecret: getInput("client-secret"),
   };
 
-  let cachedPath = find("rig", inputs.version, "amd64");
-  if (!cachedPath) {
-    let path = "";
-    if (inputs.version === "latest") {
-      path = `https://github.com/rigdev/rig/releases/latest/download/rig_linux_x86_64.tar.gz`;
-    } else {
-      path = `https://github.com/rigdev/rig/releases/download/v${inputs.version}/rig_linux_x86_64.tar.gz`;
+  let version = inputs.version;
+
+  if (version === "latest") {
+    const client = new HttpClient();
+    const response = await client.getJson<Release>(
+      "https://api.github.com/repos/rigdev/rig/releases/latest"
+    );
+    if (response.result) {
+      version = response.result.name;
     }
+  }
+
+  let cachedPath = find("rig", version, "amd64");
+  if (!cachedPath) {
+    const path = `https://github.com/rigdev/rig/releases/download/${version}/rig_linux_x86_64.tar.gz`;
 
     const file = await downloadTool(path);
     const extractedPath = await extractTar(file, "/tmp/rig/test");
-    cachedPath = await cacheDir(extractedPath, "rig", inputs.version, "amd64");
+    cachedPath = await cacheDir(extractedPath, "rig", version, "amd64");
   }
 
   addPath(cachedPath);
