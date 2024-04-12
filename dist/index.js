@@ -30752,10 +30752,11 @@ async function run() {
         if (response.result) {
             version = response.result.name;
         }
-        (0,core.debug)("fetching version " + version);
+        (0,core.info)("Fetching version " + version);
     }
     let cachedPath = (0,tool_cache.find)("rig", version, "amd64");
     if (!cachedPath) {
+        (0,core.info)("Version not found in cache, fetching " + version);
         const path = `https://github.com/rigdev/rig/releases/download/${version}/rig_linux_x86_64.tar.gz`;
         const file = await (0,tool_cache.downloadTool)(path);
         const extractedPath = await (0,tool_cache.extractTar)(file, "/tmp/rig/test");
