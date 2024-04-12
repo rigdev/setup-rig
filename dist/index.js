@@ -30752,6 +30752,7 @@ async function run() {
         if (response.result) {
             version = response.result.name;
         }
+        (0,core.debug)("fetching version " + version);
     }
     let cachedPath = (0,tool_cache.find)("rig", version, "amd64");
     if (!cachedPath) {

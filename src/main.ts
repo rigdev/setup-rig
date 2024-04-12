@@ -1,5 +1,5 @@
 import { env } from "process";
-import { getInput, addPath, info } from "@actions/core";
+import { getInput, addPath, info, debug } from "@actions/core";
 import { downloadTool, extractTar, cacheDir, find } from "@actions/tool-cache";
 import { exec, ExecOptions } from "@actions/exec";
 import { HttpClient } from "@actions/http-client";
@@ -33,6 +33,8 @@ export async function run(): Promise<void> {
     if (response.result) {
       version = response.result.name;
     }
+
+    debug("fetching version " + version);
   }
 
   let cachedPath = find("rig", version, "amd64");
